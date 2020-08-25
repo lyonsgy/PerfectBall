@@ -31,7 +31,7 @@ cc.Class({
 
                 if (blockNode.x < - cc.winSize.width / 2 - blockNode.width / 2) {
                     this.incrScore(1)
-                    blockNode.x = this.getLastBlockPosX() + 200
+                    blockNode.x = this.getLastBlockPosX() + 180
                 }
             }
         }
@@ -65,10 +65,14 @@ cc.Class({
             let blockNode = cc.instantiate(this.blockPrefab)
             blockNode.x = this.lastBlocKPosX
             blockNode.y = 0
+
+            let width = 100 + (Math.random() > .5 ? 1 : -1) * (60 * Math.random())
+            blockNode.getComponent('block').init(width)
+
             this.blockAreaNode.addChild(blockNode)
             this.blockNodeArr.push(blockNode)
 
-            this.lastBlocKPosX += 200
+            this.lastBlocKPosX += 180
         }
     },
 
