@@ -5,16 +5,21 @@ cc.Class({
         ballNode: cc.Node,
         blockPrefab: cc.Prefab,
         blockAreaNode: cc.Node,
-        scoreLabel: cc.Label
+        scoreLabel: cc.Label,
+        alertNode: cc.Node,
+        closeBtn: cc.Button,
+        alertScoreLabel: cc.Label,
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
+        this.alertNode.active = false
         this.initPhysics()
         this.initBlock()
         this.score = 0
         this.node.on('touchstart', this.boost, this)
+        this.closeBtn.node.on(cc.Node.EventType.TOUCH_END, this.closeClick, this);
         this.gameStart = false
     },
 
@@ -35,9 +40,11 @@ cc.Class({
                 }
             }
         }
-        if (this.ballNode.y < -cc.winSize.height / 2) {
+        if (this.ballNode.y < -cc.winSize.height / 2 && this.gameStart) {
             console.log('gameover')
-            cc.director.loadScene('game')
+            this.node.off('touchstart', this.boost, this)
+            this.gameStart = false
+            this.alertNode.active = true
         }
     },
 
@@ -45,6 +52,7 @@ cc.Class({
     incrScore (incr) {
         this.score += incr
         this.scoreLabel.string = this.score
+        this.alertScoreLabel.string = this.score
     },
 
     // 获取最后一块跳板位置
@@ -91,5 +99,11 @@ cc.Class({
             rigidBody.linearVelocity = cc.v2(0, -1600)
             this.gameStart = true
         }
+    },
+
+    closeClick (e) {
+        this.alertNode.active = false
+        this.closeBtn.node.off(cc.Node.EventType.TOUCH_END, this.closeClick, this);
+        cc.director.loadScene('game')
     }
 });
